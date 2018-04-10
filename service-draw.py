@@ -15,6 +15,7 @@ import types
 
 
 ###-Vars-###
+__version__='1.0.0'
 DEFAULT_CONFIG='./service-draw.conf'
 mount_point_href=""
 descr="Generate/draw graphs of services"

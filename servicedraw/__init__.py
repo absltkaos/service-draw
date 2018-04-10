@@ -9,6 +9,8 @@ with warnings.catch_warnings():
     warnings.simplefilter("ignore")
     from servicedraw import pydot
 
+__version__='1.0.0'
+
 def_service_opts={
     'depends': {},
     'reverse_depends': {},
