@@ -1,0 +1,10 @@
+[Unit]
+Description=Service Draw
+
+[Service]
+User=servicedraw
+ExecStart=/usr/bin/service-draw.py /etc/service-draw/service-draw.conf
+ExecStop=/bin/kill -INT $MAINPID
+
+[Install]
+WantedBy=multi-user.target

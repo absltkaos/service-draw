@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{graph_name}}</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <!--
+    <script>
+var svg = document.getElementsByTagName('object')[0].\
+            contentDocument.getElementsByTagName('svg')[0];
+svg.removeAttribute('width');
+svg.removeAttribute('height');
+    </script>
+    -->
+</head>
+<body>
+
+<div class="btn-group btn-group-md">
+    <a href="javascript:javascript:history.go(-1)" class="btn btn-primary" >Back</a>
+    <a href="{{mount_point}}/" class="btn btn-primary" >Service Draw Home</a>
+    <a href="/" class="btn btn-primary">Main Home</a>
+    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Download as <span class="caret"></span></button>
+    <ul class="dropdown-menu">
+        {{dl_formats_links}}
+    </ul>
+</div>
+<br />
+<div class="btn-group btn-group-md">
+    <button class="dropdown-toggle btn btn-default" type="button" data-toggle="dropdown">Jump to: {{cur_view}}<span class="caret"></span></button>
+    <ul class="dropdown-menu">
+        {{jump_to_list}}
+    </ul>
+</div>
+<div class="btn-group btn-group-md">
+    {{xtra_dropdown1}}
+</div>
+<div class="container-fluid">
+{{svg_data}}
+</div>
+<div class="container-fluid">
+    {{svc_info_table}}
+</div>
+<div class="container-fluid">
+    {{svc_deps_table}}
+</div>
+<div class="container-fluid">
+    {{svc_rdeps_table}}
+</div>
+</body>
+</html>

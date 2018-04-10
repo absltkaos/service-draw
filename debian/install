@@ -1,0 +1,3 @@
+servicedraw_build/bins/service-draw.py  /usr/bin
+servicedraw_build/service-draw.conf     /etc/service-draw
+templates/*                             /var/servicedraw/templates

@@ -1,0 +1,89 @@
+service-draw (1.0.0) unstable; urgency=low
+
+  * Move to python3 syntaxes
+  * Rename module from service_draw to servicedraw
+  * Embed dynamic_table module directly into servicedraw
+  * Embed newer version of pydot module directly into servicedraw
+  * Modify all sprintf style strings to .format
+  * Modify logging in the module to use a more proper logger style 
+  * Add service information bits to the config file, like listening port etc...
+  * Updated documentation
+
+ -- Dan Farnsworth <absltkaos@gmail.com>  Tue, 10 Apr 2018 11:33:00 -7000
+
+service-draw (0.8) unstable; urgency=low
+
+  * Fixed a small bug that prevented edges(arrows) from being added when the
+    source service/node is an infra_service type
+
+ -- Dan Farnsworth <absltkaos@gmail.com>  Tue,  8 Nov 2015 13:20:00 -6000
+
+service-draw (0.7) unstable; urgency=low
+
+  * Fix a small logic error where the node group dependency was not properly
+    reverting back to the main graph once subgraph was used.
+
+ -- Dan Farnsworth <absltkaos@gmail.com>  Fri, 30 Oct 2015 14:55:00 -7000 
+
+service-draw (0.6) unstable; urgency=low
+
+  * Add in the README.md file as a doc file
+  * Fix a small issue to make empty deps the same as rev deps in html table
+    views
+
+ -- Dan Farnsworth <absltkaos@gmail.com>  Mon, 27 Apr 2015 17:00:00 -7000 
+
+service-draw (0.6) unstable; urgency=low
+
+  * Fix self dependency subgraphs duplicating edges
+  * Add "Download as" feature dropdown menu
+  * Add reverse dependency toggle to plugin
+  * Add reverse dependecy table to sub graph display
+  * Augment service_draw library to have a url_base and url_tail when creating
+    svg links
+
+ -- Dan Farnsworth <absltkaos@gmail.com>  Mon, 27 Apr 2015 15:53:00 -7000 
+
+service-draw (0.5) unstable; urgency=low
+
+  * Add feature to jump to specific nodes of the graph
+  * Add service detail when viewing subgraph
+  * Modfiy the gen_graph function to support an extra extension 'pydot'
+  * Update plugin so route drawgraph will set more appropriate content-type
+    headers
+
+ -- Dan Farnsworth <absltkaos@gmail.com>  Tue, 23 Apr 2015 13:46:00 -7000
+
+service-draw (0.4) unstable; urgency=low
+
+  * Fix an issue with services loaded before having loaded defaults from config
+
+ -- Dan Farnsworth <absltkaos@gmail.com>  Tue, 21 Apr 2015 15:51:00 -7000
+
+service-draw (0.3) unstable; urgency=low
+
+  * Improved options handling in service_draw.py module to make adding new
+    options easier
+  * Updated service_draw.py module to include overriding of service/group
+    defaults.
+  * Add additional error messaging and trace printing/logging
+  * Add feature to service_draw.py module to build graphs from a specific
+    object down.
+  * Support for clickable service groups and services
+
+ -- Dan Farnsworth <absltkaos@gmail.com>  Mon, 20 Apr 2015 15:27:00 -7000
+
+service-draw (0.2) unstable; urgency=low
+
+  * Fixed bugs:
+   - Inferred nodes were not getting created
+   - Logic error that resulted in a null service_group being created
+  * Update service_draw.py module to also include graph name in log messages
+
+ -- Dan Farnsworth <absltkaos@gmail.com>  Wed, 15 Apr 2015 17:30:00 -7000
+
+service-draw (0.1) unstable; urgency=low
+
+  * Initial debianization
+
+ -- Dan Farnsworth <absltkaos@gmail.com>  Tue, 14 Apr 2015 16:57:00 -7000
