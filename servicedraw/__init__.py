@@ -147,11 +147,12 @@ class Draw:
                 self.services[mg]=dict(self.def_service_group_opts)
 
         #Process dependencies and any inferred nodes
+        services=dict(self.services)
         for svc in self.services:
             #Parse out and generate the depends service and port structure
-            if self.services[svc]["depends"]:
+            if services[svc]["depends"]:
                 deps_dict={}
-                deps=self.services[svc]["depends"]
+                deps=services[svc]["depends"]
                 for d_p in deps.split(';'):
                     d_p_split=d_p.strip(']').split('[')
                     d=d_p_split[0]
@@ -163,20 +164,22 @@ class Draw:
                     deps_dict[d]['ports']=p
                     #Create inferred node
                     try:
-                        tmp=self.services[d]["depends"]
+                        tmp=services[d]["depends"]
                     except KeyError:
                         self.logger.debug("Creating inferred inferred service entry: {}".format(d))
-                        self.services[d]=dict(self.def_service_opts)
-                        self.services[d]['reverse_depends']=dict()
+                        services[d]=dict(self.def_service_opts)
+                        services[d]['reverse_depends']=dict()
                     #Create a depends_by dictionary for dependency back svc
                     try:
                         self.logger.debug("Creating reverse dependancy. Service: {} -> {}. So Adding from {} -> {}".format(svc,d,d,svc))
-                        tmp=self.services[d]["reverse_depends"][svc]
+                        tmp=services[d]["reverse_depends"][svc]
                         tmp["ports"] + p
                     except KeyError:
-                        self.services[d]["reverse_depends"][svc]={}
-                        self.services[d]["reverse_depends"][svc]["ports"]=list(p)
-                self.services[svc]["depends"]=deps_dict
+                        services[d]["reverse_depends"][svc]={}
+                        services[d]["reverse_depends"][svc]["ports"]=list(p)
+                services[svc]["depends"]=deps_dict
+        self.services.update(services)
+        del(services)
 
         #Generate our service_groups dictionary and make empty Cluster subgraphs
         for svc in self.services:
