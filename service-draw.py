@@ -164,7 +164,10 @@ def init(conf_dict):
                 c=SafeConfigParser()
                 c.read(path_to_conf)
                 try:
-                    dict_vars['svg_data']=gen_graph(name,from_obj=sub_name,reverse_deps=reverse_deps,tail_opts=jl_append)[1].decode()
+                    data=gen_graph(name,from_obj=sub_name,reverse_deps=reverse_deps,tail_opts=jl_append)[1]
+                    if hasattr(data, 'decode'):
+                        data=data.decode()
+                    dict_vars['svg_data']=data
                 except:
                     app.log.error(traceback.format_exc())
                 try:
