@@ -446,6 +446,7 @@ class Draw:
                 self.graph.add_edge(edge)
 
         #Draw Edges from nodes to nodes/clusters
+        dep_edges=[]
         for node in nodes:
             if self.services[node]["type"] not in [ "service", "infra_service" ]:
                 continue
@@ -458,21 +459,31 @@ class Draw:
                 if dep in self.service_groups:
                     kwargs['dst']=self.service_groups[dep]["null_node_name"]
                     kwargs['lhead']=self.service_groups[dep]["cluster_obj"].get_name()
+                dep_edge='{src}%%{dst}%%{label}%%{lhead}'.format(src=kwargs['src'],dst=kwargs['dst'],label=kwargs.get('label','none').replace('\n',''),lhead=kwargs.get('lhead','none'))
+                dep_edges.append(dep_edge)
                 self.logger.debug("Drawing Edge from node: {} to {}".format(kwargs['src'],kwargs['dst']))
                 edge = pydot.Edge(**kwargs)
                 self.graph.add_edge(edge)
-            for rdep in self.services[node]['reverse_depends']:
-                #Check to what edges should be added for the reverse dependencies
-                kwargs={}
-                kwargs['src']=rdep
-                kwargs['dst']=node
-                if self.services[node]["reverse_depends"][rdep]["ports"]:
-                    kwargs['label']='\n'.join(self.services[node]["reverse_depends"][rdep]["ports"])
-                if rdep in self.service_groups:
-                    kwargs['dst']=self.service_groups[rdep]["null_node_name"]
-                    kwargs['lhead']=self.service_groups[rdep]["cluster_obj"].get_name()
-                edge = pydot.Edge(**kwargs)
-                self.graph.add_edge(edge)
+            if from_obj:
+                self.logger.debug("Currently drawn dep edges: %s", ', '.join(dep_edges))
+                for rdep in self.services[node]['reverse_depends']:
+                    #Check what edges should be added for the reverse dependencies
+                    kwargs={}
+                    kwargs['src']=rdep
+                    kwargs['dst']=node
+                    if self.services[node]["reverse_depends"][rdep]["ports"]:
+                        kwargs['label']='\n'.join(self.services[node]["reverse_depends"][rdep]["ports"])
+                    if rdep in self.service_groups:
+                        kwargs['dst']=self.service_groups[rdep]["null_node_name"]
+                        kwargs['lhead']=self.service_groups[rdep]["cluster_obj"].get_name()
+                    rdep_edge='{src}%%{dst}%%{label}%%{lhead}'.format(src=kwargs['src'],dst=kwargs['dst'],label=kwargs.get('label','none').replace('\n',''),lhead=kwargs.get('lhead','none'))
+                    if rdep_edge in dep_edges:
+                        # Skip already drawn edges from direct dependencies
+                        continue
+                    self.logger.debug("Drawing Edge from node: {} to {} from reverse dependencies".format(kwargs['src'],kwargs['dst']))
+                    dep_edges.append(rdep_edge)
+                    edge = pydot.Edge(**kwargs)
+                    self.graph.add_edge(edge)
         return self.graph
 
     def draw(self,from_obj=None,format="svg",reverse_deps=False):
