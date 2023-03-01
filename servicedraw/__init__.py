@@ -21,7 +21,8 @@ def_service_opts={
     'shape': 'ellipse',
     'type': 'service',
     'member_of_group': '',
-    'style': 'filled'
+    'style': 'filled',
+    'fontsize': '12.0',
 }
 
 def_service_group_opts={
@@ -30,11 +31,15 @@ def_service_group_opts={
     'bgcolor': 'white',
     'style': None,
     'type': 'service_group',
+    'fontsize': '12.0',
 }
 
 def_graph_opts={
     'name': 'Service Dependency Graph',
-    'layout': 'TB',
+    'rankdir': None,
+    'ratio': None,
+    'size': None,
+    'prog': 'dot',
     'fontcolor': 'black',
     'bgcolor': None
 }
@@ -52,7 +57,6 @@ class Draw:
             self.logger=logger
         else:
             self.logger=logging.getLogger('servicedraw.Draw')
-
         if hasattr(config,'sections'):
             try:
                 s_count=len(config.sections())
@@ -198,6 +202,7 @@ class Draw:
                     kwargs['color']=self.services[svc]['color']
                     kwargs['bgcolor']=self.services[svc]['bgcolor']
                     kwargs['style']=self.services[svc]['style']
+                    kwargs['fontsize']=self.services[svc]['fontsize']
                     if self.url:
                         url_svc=dict(self.url)
                         url_svc['svc']=svc
@@ -227,6 +232,7 @@ class Draw:
                         kwargs['color']=self.services[mg]['color']
                         kwargs['bgcolor']=self.services[mg]['bgcolor']
                         kwargs['style']=self.services[mg]['style']
+                        kwargs['fontsize']=self.services[svc]['fontsize']
                         if self.url:
                             url_svc=dict(self.url)
                             url_svc['svc']=mg
@@ -257,7 +263,17 @@ class Draw:
                 self.service_groups[mg]['svc_members'].append(svc)
 
     def _new_graph(self):
-        g=pydot.Dot(graph_type='digraph',graph_name="Main Graph",label=self.graph_opts['name'],fontcolor=self.graph_opts['fontcolor'],bgcolor=self.graph_opts['bgcolor'],rankdir=self.graph_opts['layout'],compound=True)
+        g=pydot.Dot(
+                graph_type='digraph',
+                graph_name="Main Graph",
+                label=self.graph_opts['name'],
+                fontcolor=self.graph_opts['fontcolor'],
+                bgcolor=self.graph_opts['bgcolor'],
+                rankdir=self.graph_opts['rankdir'],
+                ratio=self.graph_opts['ratio'],
+                size=self.graph_opts['size'],
+                prog=self.graph_opts['prog'],
+                compound=True)
         return g
 
     def _create_nodes(self):
@@ -286,6 +302,7 @@ class Draw:
             kwargs['shape']=shape
             kwargs['fontcolor']=self.services[node]["fontcolor"]
             kwargs['fillcolor']=self.services[node]["bgcolor"]
+            kwargs['fontsize']=self.services[node]["fontsize"]
             kwargs['style']='"{}"'.format(self.services[node]["style"])
             if kwargs['color'] == "auto":
                 kwargs['color'] = "black"
@@ -460,12 +477,15 @@ class Draw:
                     kwargs['dst']=self.service_groups[dep]["null_node_name"]
                     kwargs['lhead']=self.service_groups[dep]["cluster_obj"].get_name()
                 dep_edge='{src}%%{dst}%%{label}%%{lhead}'.format(src=kwargs['src'],dst=kwargs['dst'],label=kwargs.get('label','none').replace('\n',''),lhead=kwargs.get('lhead','none'))
+                if dep_edge in dep_edges:
+                    # Skip already drawn edges from pre-existing dependencies
+                    continue
                 dep_edges.append(dep_edge)
                 self.logger.debug("Drawing Edge from node: {} to {}".format(kwargs['src'],kwargs['dst']))
                 edge = pydot.Edge(**kwargs)
                 self.graph.add_edge(edge)
             if from_obj:
-                self.logger.debug("Currently drawn dep edges: %s", ', '.join(dep_edges))
+                self.logger.debug("Currently drawn dep edges for '%s': %s", node, ', '.join(dep_edges))
                 for rdep in self.services[node]['reverse_depends']:
                     #Check what edges should be added for the reverse dependencies
                     kwargs={}
