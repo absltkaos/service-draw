@@ -1,11 +1,11 @@
 #!/usr/bin/python3
 # vim:set et ts=4 sw=4:
 from flask import Flask, request, render_template, Response, Markup
-from configparser import SafeConfigParser
+from configparser import ConfigParser
 from servicedraw import dynamic_table
 from werkzeug.utils import secure_filename
 import gevent.subprocess as subprocess
-import gevent.wsgi
+import gevent.pywsgi
 import logging
 import os
 import servicedraw
@@ -103,7 +103,7 @@ def init(conf_dict):
             if os.path.isfile("{}/{}".format(confs_path,f)):
                 name, ext = os.path.splitext(f)
                 if ext == '.conf':
-                    pdt_conf=SafeConfigParser()
+                    pdt_conf=ConfigParser()
                     if pdt_conf.read(('{}/{}'.format(confs_path,f))) == []:
                         raise RuntimeError('Could not load Product configuration from file: {}/{}'.format(confs_path,f))
                     try:
@@ -161,7 +161,7 @@ def init(conf_dict):
         path_to_conf="{}/{}.conf".format(confs_path,name)
         if os.path.isfile(path_to_conf):
             try:
-                c=SafeConfigParser()
+                c=ConfigParser()
                 c.read(path_to_conf)
                 try:
                     data=gen_graph(name,from_obj=sub_name,reverse_deps=reverse_deps,tail_opts=jl_append)[1]
@@ -283,7 +283,7 @@ if __name__ == "__main__":
         REAL_CONFIG=CONFIG
     else:
         REAL_CONFIG=DEFAULT_CONFIG
-    conf = SafeConfigParser()
+    conf = ConfigParser()
 
     if conf.read((REAL_CONFIG)) == []:
         print('Could not load config from DEFAULT_CONFIG({}) or User Supplied CONFIG({})'.format(DEFAULT_CONFIG,CONFIG))
@@ -291,8 +291,8 @@ if __name__ == "__main__":
     
     #Initialize signal handling
     print("Initializing signal handlers")
-    gevent.signal(signal.SIGINT,sig_shutdown)
-    gevent.signal(signal.SIGQUIT,sig_shutdown)
+    gevent.signal_handler(signal.SIGINT,sig_shutdown)
+    gevent.signal_handler(signal.SIGQUIT,sig_shutdown)
 
     #Create a logger
     #Initialize logging
@@ -318,7 +318,7 @@ if __name__ == "__main__":
     wsgi_opts['listener'] = (conf.get('main','listen'), conf.getint('main', 'port'))
     wsgi_opts['application'] = wsgi_app
     wsgi_opts['log'] = glogger
-    wsgi = gevent.wsgi.WSGIServer(**wsgi_opts)
+    wsgi = gevent.pywsgi.WSGIServer(**wsgi_opts)
     #Start the WSGI server
     wsgi.start()
 
