@@ -9,7 +9,7 @@ X-Python3-Version: >= 3.5
 
 Package: service-draw
 Architecture: all
-Depends: ${misc:Depends}, python3-flask, python3-gevent, python3-servicedraw (>= 1.0.0)
+Depends: ${misc:Depends}, python3-flask, python3-gevent, python3-pydot, python3-servicedraw (>= 1.0.0)
 Description: HTTP service for displaying and browsing graphs defined using the service_draw module
 
 Package: python3-servicedraw

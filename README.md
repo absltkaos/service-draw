@@ -9,11 +9,38 @@ The problems with this are:
 1. Even if the diagramming tool's saved file is shared, it isn't easy to see what was changed from one edit to another without opening all other revisions.
 1. Even adding a saved file to an RCS like git, doesn't work as many formats are binary, so no diff... those that aren't usually are XML which diffing get ugly.
 
+# Installing the service
+## Debian Source
+There are debian build files available, but they are currently unmaintained.
+
+Docker Container is recommended
+
+## Running via docker
+
+Build the image:
+```bash
+docker build . -t service-draw:latest
+```
+
+Run container:
+```bash
+docker run --rm -it -v $PWD/services.d:/etc/service-draw/services.d -p 8080:8080 service-draw:latest
+```
+
+Then you should be able to load the UI by going to: http://localhost:8080
+
+The override the following paths inside the container as needed:
+* `/etc/service-draw/service-draw.conf` - The main config file (Overriding this may affect some of the paths below)
+* `/etc/service-draw/service.d/` - The directory where service graphs are stored
+* `/var/servicedraw/templates` - The directory where the html templates for the webui are loaded
+* `/usr/local/service-draw/service-draw.py` - The main executable
+* `/usr/local/service-draw/servicedraw/` - The module where all the logic is stored
+
 # Solution
 The problems mentioned above are addressed with this plugin. Here is how it works:
 
-1. Install the plugin
-1. Go to /etc/service_draw/services.d directory and create a new file <Product>.conf
+1. Install the service
+1. Go to /etc/service-draw/services.d directory and create a new file <Product>.conf
 1. Being adding in services and service groups. (See the "Service Config" section)
 
 The .conf can be managed with and RCS and deployed with config management if wanted. Because the config is divided into sections, changes made by people (tracked in your RCS) are easy to see.
@@ -21,7 +48,7 @@ The .conf can be managed with and RCS and deployed with config management if wan
 # Important information about how this works
 This uses pydot >= 1.2.25 (which uses graphviz) to create elements of a .dot graph.
 
-Because of this, there are times when options exposed via the config file and left up to the end-user could be non-parseable to graphiz. I've tried catch some common edge cases, but if pydot throws an InvocationError it is because pydot thinks everything looks good but graphviz doesn't agree. Frequently this is because of commas added to options that don't support them etc...
+Because of this, there are times when options exposed via the config file and left up to the end-user could be non-parseable to graphiz. I've tried catching some common edge cases, but if pydot throws an InvocationError it is because pydot thinks everything looks good but graphviz doesn't agree. Frequently this is because of commas added to options that don't support them etc...
 
 # Configuration
 There are two type of configurations.

@@ -7,7 +7,7 @@ import warnings
 
 with warnings.catch_warnings():
     warnings.simplefilter("ignore")
-    from servicedraw import pydot
+    import pydot
 
 __version__='1.0.0'
 
